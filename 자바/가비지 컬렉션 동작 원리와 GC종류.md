@@ -75,3 +75,21 @@ old영역이 young영역보다 크게 할당되는 이유는 young 영역의 수
 ### Survivor 0/ Survivor 1
  - 취소 1번의 gc 이상 살아남은 객체가 존재하는 영역
  - Survivor 영역에는 특별한 규칙이 있는데, Survivor 0 또는 Survivor 1 둘중 하나에는 꼭 비어 있어야 함.
+
+## G1GC
+ - java9부터 기본 GC
+ - 이전의 GC는 Young Generation, Old Generation 영역이 고정적이였지만 
+  G1G1는 Eden, Survivor, Old 영역을 전체 Heap 메모리 영역에서 Region 이라는 특정한 크기로 나눠서 동작함
+ - Region의 상태에 따라 그 Region의 역할(Edenm Survivor, Old)가 동적으로 변동하여 애플리케이션 동작에 따라 GC작업을 최적화 할 수 있게함.
+ - 대부분의 GC 작업을 병렬 또는 동시에 수행하여 GC시간을 최소화 한다.
+## ZGC
+ - ZGC는 ZPages를 사용하는데 이는 G1GC의 Region과 비슷한 영역의 개념을 사용함.
+ - G1 GC의 Region의 크기는 고정적이고, `ZPages는 크기가 2의 배수로 동적 생성 및 삭제가 가능`
+ - ZGC의 성능을 확보하기 위해서는 메모리가 8MB부터 16TB 성능의 서버에서 사용가능
+ - G1GC는 가용할 수 있는 region을 확보해서 할당해야 하는데 이는 상당한 비용이 든다.
+ - 이를 개선하고자 ZGC의 compact 과정은 새로운 region을 생성한 후 살아있는 개체들을 채우도록 동작한다.
+ - ZGC의 목표는 모든 종류의 고비용 작업을 동시 작업하고 STW를 10ms 미만으로 줄이는 것
+
+## G1GC 와 ZGC 언제 사용해야 할까
+ - G1GC : 대부분의 일반적인 자바 애플리케이션에 적합하며, 안정적인 성능과 예측 가능한 GC중지 시간이 요구되는 경우
+ - ZGC : 매우 낮은 GC중지 시간이 필요하거나, 대규모 메모리와 고성능 서버에서 동작해야 하는 경우에 선택된다.
